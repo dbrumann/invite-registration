@@ -8,6 +8,7 @@
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/console": "*",
         "symfony/flex": "^1.1",
+        "symfony/form": "*",
         "symfony/framework-bundle": "*",
         "symfony/security-bundle": "*",
         "symfony/twig-bundle": "*",
