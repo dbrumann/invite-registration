@@ -2,21 +2,27 @@
 
 namespace App\MessageHandler;
 
+use App\Message\RedeemInvitation;
 use App\Message\RegisterUser;
-use App\Registration\RegistrationFacade;
+use App\Registration\UserCreator;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class RegisterUserHandler implements MessageHandlerInterface
 {
-    private $registration;
+    private $userCreator;
+    private $messageBus;
 
-    public function __construct(RegistrationFacade $registration)
+    public function __construct(UserCreator $userCreator, MessageBusInterface $messageBus)
     {
-        $this->registration = $registration;
+        $this->userCreator = $userCreator;
+        $this->messageBus = $messageBus;
     }
 
-    public function __invoke(RegisterUser $registerUserMessage)
+    public function __invoke(RegisterUser $registerUserMessage): void
     {
-        $this->registration->register($registerUserMessage);
+        $createdUser = $this->userCreator->create($registerUserMessage->email, $registerUserMessage->plainPassword);
+
+        $this->messageBus->dispatch(new RedeemInvitation($registerUserMessage->inviteCode, $createdUser));
     }
 }

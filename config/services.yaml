@@ -28,3 +28,13 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddlewareFactory:
+        arguments:
+            - '@doctrine'
+
+    messenger.middleware.doctrine_transaction_middleware:
+        class: Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddleware
+        factory: 'Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddlewareFactory:createMiddleware'
+        abstract: true
+        arguments:
+            - 'default' # Name of the entity manager to be used

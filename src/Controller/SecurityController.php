@@ -3,11 +3,9 @@
 namespace App\Controller;
 
 use App\Form\RegistrationType;
-use App\Message\RegisterUser as RegistrationRequest;
 use App\Registration\Exceptions\EmailAlreadyRegisteredException;
 use App\Registration\Exceptions\InvalidInvitationException;
 use App\Registration\Exceptions\RegistrationFailedException;
-use App\Registration\RegistrationFacade;
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -44,8 +42,17 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $messageBus->dispatch($form->getData());
-            } catch (RegistrationFailedException $exception) {
-                $form->addError(new FormError($exception->getMessage()));
+            } catch (EmailAlreadyRegisteredException $exception) {
+                $form->get('email')->addError(new FormError($exception->getMessage()));
+
+                return $this->render(
+                    'register.html.twig',
+                    [
+                        'form' => $form->createView(),
+                    ]
+                );
+            } catch (InvalidInvitationException $exception) {
+                $form->get('inviteCode')->addError(new FormError($exception->getMessage()));
 
                 return $this->render(
                     'register.html.twig',

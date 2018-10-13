@@ -7,3 +7,9 @@ framework:
         routing:
             # Route your messages to the transports
             # 'App\Message\YourMessage': amqp
+
+        buses:
+            default:
+                middleware:
+                    - 'doctrine_transaction_middleware'
+
