@@ -2,18 +2,18 @@
 
 namespace App\Controller;
 
-use App\Repository\InvitationRepository;
+use App\Registration\InvitationProvider;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractController
 {
-    private $invitationRepository;
+    private $invitationProvider;
 
-    public function __construct(InvitationRepository $invitationRepository)
+    public function __construct(InvitationProvider $invitationProvider)
     {
-        $this->invitationRepository = $invitationRepository;
+        $this->invitationProvider = $invitationProvider;
     }
 
     /**
@@ -25,7 +25,7 @@ class DashboardController extends AbstractController
         return $this->render(
             'dashboard.html.twig',
             [
-                'invitations' => $this->invitationRepository->findInvitationsByOwner($this->getUser()),
+                'invitations' => $this->invitationProvider->getInvitations($this->getUser()),
             ]
         );
     }

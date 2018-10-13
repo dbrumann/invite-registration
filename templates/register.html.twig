@@ -6,6 +6,8 @@
     <h1>Register a new account</h1>
 
     {{ form_start(form) }}
+        {{ form_errors(form) }}
+
         {{ form_row(form.inviteCode) }}
         {{ form_row(form.email) }}
         {{ form_row(form.plainPassword) }}

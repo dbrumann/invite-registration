@@ -33,6 +33,11 @@ class User implements UserInterface
         $this->email = $email;
     }
 
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
     public function updatePassword(string $encodedPassword): void
     {
         $this->encodedPassword = $encodedPassword;

@@ -6,7 +6,8 @@ use App\Dto\Registration as RegistrationRequest;
 use App\Form\RegistrationType;
 use App\Registration\Exceptions\EmailAlreadyRegisteredException;
 use App\Registration\Exceptions\InvalidInvitationException;
-use App\Registration\Registration;
+use App\Registration\Exceptions\RegistrationFailedException;
+use App\Registration\RegistrationFacade;
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -33,7 +34,7 @@ class SecurityController extends AbstractController
     /**
      * @Route(path="/register", name="register")
      */
-    public function register(Request $request, Registration $registration)
+    public function register(Request $request, RegistrationFacade $registration)
     {
         $form = $this->createForm(RegistrationType::class);
 
@@ -45,17 +46,8 @@ class SecurityController extends AbstractController
 
             try {
                 $registration->register($registrationDto);
-            } catch (InvalidInvitationException $exception) {
-                $form->get('inviteCode')->addError(new FormError('The invitation code is not valid.'));
-
-                return $this->render(
-                    'register.html.twig',
-                    [
-                        'form' => $form->createView(),
-                    ]
-                );
-            } catch (EmailAlreadyRegisteredException $exception) {
-                $form->get('email')->addError(new FormError('This email address is already in use. Please login instead.'));
+            } catch (RegistrationFailedException $exception) {
+                $form->addError(new FormError($exception->getMessage()));
 
                 return $this->render(
                     'register.html.twig',

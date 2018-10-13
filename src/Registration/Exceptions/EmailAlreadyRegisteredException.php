@@ -4,6 +4,6 @@ namespace App\Registration\Exceptions;
 
 use DomainException;
 
-class EmailAlreadyRegisteredException extends DomainException
+final class EmailAlreadyRegisteredException extends DomainException
 {
 }

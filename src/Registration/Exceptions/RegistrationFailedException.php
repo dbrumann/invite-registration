@@ -4,6 +4,6 @@ namespace App\Registration\Exceptions;
 
 use DomainException;
 
-final class InvalidInvitationException extends DomainException
+final class RegistrationFailedException extends DomainException
 {
 }

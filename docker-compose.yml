@@ -22,9 +22,11 @@ services:
         ports:
             - 8000:8000
         environment:
-            APP_ENV: dev
+            APP_ENV: "dev"
             APP_DEBUG: 1
-            DATABASE_URL: mysql://dbuser:dbpass@db:3306/invite_registration
+            APP_SECRET: "90bdd6ea7f7117657cbc1e304392971f"
+            DATABASE_URL: "mysql://dbuser:dbpass@db:3306/invite_registration"
+            MAILER_URL: "null://localhost"
 
 volumes:
     db_data: ~

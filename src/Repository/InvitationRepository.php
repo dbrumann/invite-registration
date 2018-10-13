@@ -3,10 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Invitation;
-use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 
 class InvitationRepository extends ServiceEntityRepository
@@ -16,9 +14,12 @@ class InvitationRepository extends ServiceEntityRepository
         parent::__construct($registry, Invitation::class);
     }
 
-    public function findInvitationsByOwner(User $user)
+    /**
+     * @return Invitation[]
+     */
+    public function findInvitationsByOwner(int $id): array
     {
-        return $this->findBy(['owner' => $user]);
+        return $this->findBy(['owner' => $id]);
     }
 
     /**
