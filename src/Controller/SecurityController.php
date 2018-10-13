@@ -11,6 +11,8 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use RuntimeException;
+use Swift_Mailer;
+use Swift_Message;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +43,8 @@ class SecurityController extends AbstractController
         Request $request,
         InvitationRepository $invitationRepository,
         UserPasswordEncoderInterface $passwordEncoder,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        Swift_Mailer $mailer
     ) {
         $form = $this->createForm(RegistrationType::class);
 
@@ -94,6 +97,15 @@ class SecurityController extends AbstractController
                 $entityManager->persist(new Invitation($user));
             }
             $entityManager->flush();
+
+            // Step 5: Inform invitation owner of newly registered user
+            $message = new Swift_Message(
+                'Your invitation was redeemed.',
+                'One of your friends registered with an invite code you sent them.'
+            );
+            $message->setTo([$invitation->getOwner()->getEmail()]);
+
+            $mailer->send($message);
 
             return $this->redirectToRoute('login');
         }
