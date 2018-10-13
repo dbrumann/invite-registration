@@ -6,7 +6,9 @@ use App\Dto\Registration;
 use App\Entity\User;
 use App\Form\RegistrationType;
 use App\Repository\InvitationRepository;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NoResultException;
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -49,7 +51,9 @@ class SecurityController extends AbstractController
             $registration = $form->getData();
 
             // Step 1: Check invite code, if it is still redeemable
-            if (!$invitationRepository->isRedeemable($registration->inviteCode)) {
+            try {
+                $invitation = $invitationRepository->findOpenInvitationByCode($registration->inviteCode);
+            } catch (NoResultException $exception) {
                 $form->get('inviteCode')->addError(new FormError('The invitation code is not valid.'));
 
                 return $this->render(
@@ -67,6 +71,21 @@ class SecurityController extends AbstractController
             $user->updatePassword($encodedPassword);
 
             $entityManager->persist($user);
+            try {
+                $entityManager->flush();
+            } catch (UniqueConstraintViolationException $exception) {
+                $form->get('email')->addError(new FormError('This email address is already in use. Please login instead.'));
+
+                return $this->render(
+                    'register.html.twig',
+                    [
+                        'form' => $form->createView(),
+                    ]
+                );
+            }
+
+            // Step 3: Redeem invite code used for registration
+            $invitation->redeem($user);
             $entityManager->flush();
 
             return $this->redirectToRoute('login');

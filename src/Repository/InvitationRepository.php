@@ -6,6 +6,8 @@ use App\Entity\Invitation;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 
 class InvitationRepository extends ServiceEntityRepository
 {
@@ -19,15 +21,17 @@ class InvitationRepository extends ServiceEntityRepository
         return $this->findBy(['owner' => $user]);
     }
 
-    public function isRedeemable(string $id): bool
+    /**
+     * @throws NoResultException When no invite code matches the criteria
+     */
+    public function findOpenInvitationByCode(string $id): Invitation
     {
         $builder = $this->createQueryBuilder('invitation');
 
         return $builder
-            ->select('COUNT(invitation)')
             ->where('invitation.id = :id AND invitation.redeemedAt IS NULL')
             ->setParameter('id', $id)
             ->getQuery()
-            ->getSingleScalarResult() === 1;
+            ->getSingleResult();
     }
 }
