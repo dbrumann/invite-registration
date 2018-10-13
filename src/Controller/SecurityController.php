@@ -3,13 +3,16 @@
 namespace App\Controller;
 
 use App\Dto\Registration;
+use App\Entity\User;
 use App\Form\RegistrationType;
 use App\Repository\InvitationRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
@@ -31,8 +34,12 @@ class SecurityController extends AbstractController
     /**
      * @Route(path="/register", name="register")
      */
-    public function register(Request $request, InvitationRepository $invitationRepository)
-    {
+    public function register(
+        Request $request,
+        InvitationRepository $invitationRepository,
+        UserPasswordEncoderInterface $passwordEncoder,
+        EntityManagerInterface $entityManager
+    ) {
         $form = $this->createForm(RegistrationType::class);
 
         $form->handleRequest($request);
@@ -52,6 +59,15 @@ class SecurityController extends AbstractController
                     ]
                 );
             }
+
+            // Step 2: Create new user
+            $user = new User($registration->email);
+
+            $encodedPassword = $passwordEncoder->encodePassword($user, $registration->plainPassword);
+            $user->updatePassword($encodedPassword);
+
+            $entityManager->persist($user);
+            $entityManager->flush();
 
             return $this->redirectToRoute('login');
         }
