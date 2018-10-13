@@ -12,14 +12,18 @@
             </tr>
         </thead>
         <tbody>
+            {% for invitation in invitations %}
             <tr>
-                <td><code>abcd-1234-abcd</code></td>
-                <td><span class="badge badge-primary">open</span></td>
+                <td><code>{{ invitation }}</code></td>
+                <td>
+                    {% if invitation.redeemed %}
+                        <span class="badge badge-success">redemeed</span>
+                    {% else %}
+                        <span class="badge badge-primary">open</span>
+                    {% endif %}
+                </td>
             </tr>
-            <tr>
-                <td><code>abcd-1234-abcd</code></td>
-                <td><span class="badge badge-success">redeemed</span></td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
 

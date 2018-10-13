@@ -26,36 +26,31 @@ class User implements UserInterface
     /**
      * @ORM\Column(name="password", length=100)
      */
-    private $encodedPassword;
+    private $encodedPassword = '';
 
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): void
+    public function __construct(string $email)
     {
         $this->email = $email;
     }
 
-    public function getUsername()
+    public function updatePassword(string $encodedPassword): void
+    {
+        $this->encodedPassword = $encodedPassword;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function getUsername(): string
     {
         return $this->getEmail();
     }
 
-    public function getPassword(): ?string
+    public function getPassword(): string
     {
         return $this->encodedPassword;
-    }
-
-    public function setPassword(string $encodedPassword): void
-    {
-        $this->encodedPassword = $encodedPassword;
     }
 
     public function getRoles(): array
