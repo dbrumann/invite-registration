@@ -48,6 +48,16 @@ class Registration
 
         $this->createInviteCodesForInvitedUser($user);
 
+        try {
+            $this->entityManager->flush();
+        } catch (UniqueConstraintViolationException $exception) {
+            throw new EmailAlreadyRegisteredException(
+                sprintf('There already is a registered user for email address "%s"', $registration->email),
+                0,
+                $exception
+            );
+        }
+
         $this->notifyInviteOwner($invitation->getOwner());
     }
 
@@ -78,15 +88,6 @@ class Registration
         $user->updatePassword($encodedPassword);
 
         $this->entityManager->persist($user);
-        try {
-            $this->entityManager->flush();
-        } catch (UniqueConstraintViolationException $exception) {
-            throw new EmailAlreadyRegisteredException(
-                sprintf('There already is a registered user for email address "%s"', $email),
-                0,
-                $exception
-            );
-        }
 
         return $user;
     }
@@ -97,7 +98,6 @@ class Registration
     private function redeemInvitation(Invitation $invitation, User $invitedUser): void
     {
         $invitation->redeem($invitedUser);
-        $this->entityManager->flush();
     }
 
     /**
@@ -108,7 +108,6 @@ class Registration
         for ($i = 0; $i < 5; ++$i) {
             $this->entityManager->persist(new Invitation($inviteduser));
         }
-        $this->entityManager->flush();
     }
 
     /**
