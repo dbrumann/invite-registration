@@ -18,4 +18,16 @@ class InvitationRepository extends ServiceEntityRepository
     {
         return $this->findBy(['owner' => $user]);
     }
+
+    public function isRedeemable(string $id): bool
+    {
+        $builder = $this->createQueryBuilder('invitation');
+
+        return $builder
+            ->select('COUNT(invitation)')
+            ->where('invitation.id = :id AND invitation.redeemedAt IS NULL')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getSingleScalarResult() === 1;
+    }
 }

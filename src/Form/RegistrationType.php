@@ -2,11 +2,13 @@
 
 namespace App\Form;
 
+use App\Dto\Registration;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RegistrationType extends AbstractType
 {
@@ -14,7 +16,7 @@ class RegistrationType extends AbstractType
     {
         $builder
             ->add(
-                'code',
+                'inviteCode',
                 TextType::class,
                 [
                     'label' => 'Invite code:',
@@ -30,7 +32,7 @@ class RegistrationType extends AbstractType
                 ]
             )
             ->add(
-                'password',
+                'plainPassword',
                 PasswordType::class,
                 [
                     'label' => 'Password:',
@@ -38,5 +40,10 @@ class RegistrationType extends AbstractType
                 ]
             )
         ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefault('data_class', Registration::class);
     }
 }

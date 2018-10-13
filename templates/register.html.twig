@@ -6,9 +6,9 @@
     <h1>Register a new account</h1>
 
     {{ form_start(form) }}
-        {{ form_row(form.code) }}
+        {{ form_row(form.inviteCode) }}
         {{ form_row(form.email) }}
-        {{ form_row(form.password) }}
+        {{ form_row(form.plainPassword) }}
 
         <div class="mb-3">
             <button type="submit" class="btn btn-primary">register</button>&emsp;

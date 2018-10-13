@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Dto\Registration;
 use App\Form\RegistrationType;
+use App\Repository\InvitationRepository;
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -28,14 +31,27 @@ class SecurityController extends AbstractController
     /**
      * @Route(path="/register", name="register")
      */
-    public function register(Request $request)
+    public function register(Request $request, InvitationRepository $invitationRepository)
     {
         $form = $this->createForm(RegistrationType::class);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // TODO: Perform registration and redirect on success
+            /** @var Registration $registration */
+            $registration = $form->getData();
+
+            // Step 1: Check invite code, if it is still redeemable
+            if (!$invitationRepository->isRedeemable($registration->inviteCode)) {
+                $form->get('inviteCode')->addError(new FormError('The invitation code is not valid.'));
+
+                return $this->render(
+                    'register.html.twig',
+                    [
+                        'form' => $form->createView(),
+                    ]
+                );
+            }
 
             return $this->redirectToRoute('login');
         }
