@@ -55,6 +55,7 @@ Installation
 
     ```
     php bin/console doctrine:schema:update --force
+    php bin/console doctrine:fixtures:load
     ```
 
 4. Start web server

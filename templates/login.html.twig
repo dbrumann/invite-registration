@@ -5,10 +5,16 @@
 
     <h1>Login</h1>
 
+    {% if error %}
+    <div class="alert alert-danger">
+        <strong>Login failed</strong> {{ error.messageKey|trans(error.messageData, "security") }}
+    </div>
+    {% endif %}
+
     <form action="{{ path('login') }}" method="post">
         <div class="mb-3">
             <label for="username">Email:</label>
-            <input type="text" id="username" name="_username" class="form-control" />
+            <input type="text" id="username" name="_username" value="{{ last_username }}" class="form-control" />
         </div>
 
         <div class="mb-3">

@@ -7,15 +7,22 @@ use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
     /**
      * @Route(path="/login", name="login")
      */
-    public function login()
+    public function login(AuthenticationUtils $authUtils)
     {
-        return $this->render('login.html.twig');
+        return $this->render(
+            'login.html.twig',
+            [
+                'error' => $authUtils->getLastAuthenticationError(),
+                'last_username' => $authUtils->getLastUsername(),
+            ]
+        );
     }
 
     /**
