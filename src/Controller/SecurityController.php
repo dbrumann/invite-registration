@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Dto\Registration as RegistrationRequest;
 use App\Form\RegistrationType;
+use App\Message\RegisterUser as RegistrationRequest;
 use App\Registration\Exceptions\EmailAlreadyRegisteredException;
 use App\Registration\Exceptions\InvalidInvitationException;
 use App\Registration\Exceptions\RegistrationFailedException;
@@ -12,6 +12,7 @@ use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -34,18 +35,15 @@ class SecurityController extends AbstractController
     /**
      * @Route(path="/register", name="register")
      */
-    public function register(Request $request, RegistrationFacade $registration)
+    public function register(Request $request, MessageBusInterface $messageBus)
     {
         $form = $this->createForm(RegistrationType::class);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var RegistrationRequest $registrationDto */
-            $registrationDto = $form->getData();
-
             try {
-                $registration->register($registrationDto);
+                $messageBus->dispatch($form->getData());
             } catch (RegistrationFailedException $exception) {
                 $form->addError(new FormError($exception->getMessage()));
 

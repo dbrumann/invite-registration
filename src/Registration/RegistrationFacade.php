@@ -2,7 +2,7 @@
 
 namespace App\Registration;
 
-use App\Dto\Registration as RegistrationRequest;
+use App\Message\RegisterUser as RegistrationRequest;
 use App\Registration\Exceptions\EmailAlreadyRegisteredException;
 use App\Registration\Exceptions\InvalidInvitationException;
 use App\Registration\Exceptions\RegistrationFailedException;

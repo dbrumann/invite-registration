@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace App\Dto;
+namespace App\Message;
 
-class Registration
+class RegisterUser
 {
     public $inviteCode;
     public $email;

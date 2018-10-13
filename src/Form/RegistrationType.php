@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Dto\Registration;
+use App\Message\RegisterUser;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -44,6 +44,6 @@ class RegistrationType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefault('data_class', Registration::class);
+        $resolver->setDefault('data_class', RegisterUser::class);
     }
 }
