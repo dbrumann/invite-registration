@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\Registration;
+use App\Entity\Invitation;
 use App\Entity\User;
 use App\Form\RegistrationType;
 use App\Repository\InvitationRepository;
@@ -86,6 +87,12 @@ class SecurityController extends AbstractController
 
             // Step 3: Redeem invite code used for registration
             $invitation->redeem($user);
+            $entityManager->flush();
+
+            // Step 4: Create invite codes for new user
+            for ($i = 0; $i < 5; ++$i) {
+                $entityManager->persist(new Invitation($user));
+            }
             $entityManager->flush();
 
             return $this->redirectToRoute('login');
