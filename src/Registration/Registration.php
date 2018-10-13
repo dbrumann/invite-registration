@@ -34,23 +34,47 @@ class Registration
         $this->mailer = $mailer;
     }
 
+    /**
+     * @throws InvalidInvitationException When invite code is not redeemable.
+     * @throws EmailAlreadyRegisteredException When email is already registered with another user.
+     */
     public function register(RegistrationRequest $registration): void
     {
-        // Step 1: Check invite code, if it is still redeemable
+        $invitation = $this->getInvitation($registration->inviteCode);
+
+        $user = $this->registerInvitedUser($registration->email, $registration->plainPassword);
+
+        $this->redeemInvitation($invitation, $user);
+
+        $this->createInviteCodesForInvitedUser($user);
+
+        $this->notifyInviteOwner($invitation->getOwner());
+    }
+
+    /**
+     * Step 1: Check invite code, if it is still redeemable
+     */
+    private function getInvitation(string $inviteCode): Invitation
+    {
         try {
-            $invitation = $this->invitationRepository->findOpenInvitationByCode($registration->inviteCode);
+            return $this->invitationRepository->findOpenInvitationByCode($inviteCode);
         } catch (NoResultException $exception) {
             throw new InvalidInvitationException(
-                sprintf('Could not find an open invitation matching the code "%s"', $registration->inviteCode),
+                sprintf('Could not find an open invitation matching the code "%s"', $inviteCode),
                 0,
                 $exception
             );
         }
+    }
 
-        // Step 2: Create new user
-        $user = new User($registration->email);
+    /**
+     * Step 2: Create new user
+     */
+    private function registerInvitedUser(string $email, string $password): User
+    {
+        $user = new User($email);
 
-        $encodedPassword = $this->passwordEncoder->encodePassword($user, $registration->plainPassword);
+        $encodedPassword = $this->passwordEncoder->encodePassword($user, $password);
         $user->updatePassword($encodedPassword);
 
         $this->entityManager->persist($user);
@@ -58,28 +82,45 @@ class Registration
             $this->entityManager->flush();
         } catch (UniqueConstraintViolationException $exception) {
             throw new EmailAlreadyRegisteredException(
-                sprintf('There already is a registered user for email address "%s"', $registration->email),
+                sprintf('There already is a registered user for email address "%s"', $email),
                 0,
                 $exception
             );
         }
 
-        // Step 3: Redeem invite code used for registration
-        $invitation->redeem($user);
-        $this->entityManager->flush();
+        return $user;
+    }
 
-        // Step 4: Create invite codes for new user
+    /**
+     * Step 3: Redeem invite code used for registration
+     */
+    private function redeemInvitation(Invitation $invitation, User $invitedUser): void
+    {
+        $invitation->redeem($invitedUser);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * Step 4: Create invite codes for new user
+     */
+    private function createInviteCodesForInvitedUser(User $inviteduser): void
+    {
         for ($i = 0; $i < 5; ++$i) {
-            $this->entityManager->persist(new Invitation($user));
+            $this->entityManager->persist(new Invitation($inviteduser));
         }
         $this->entityManager->flush();
+    }
 
-        // Step 5: Inform invitation owner of newly registered user
+    /**
+     * Step 5: Inform invitation owner of newly registered user
+     */
+    private function notifyInviteOwner(User $inviteOwner): void
+    {
         $message = new Swift_Message(
             'Your invitation was redeemed.',
             'One of your friends registered with an invite code you sent them.'
         );
-        $message->setTo([$invitation->getOwner()->getEmail()]);
+        $message->setTo([$inviteOwner->getEmail()]);
 
         $this->mailer->send($message);
     }
