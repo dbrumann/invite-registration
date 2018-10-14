@@ -42,7 +42,7 @@ Installation
 1. Clone the repository
 
     ```
-    git clone git@github.com:dbrumann/messenger-invite-registration.git
+    git clone git@github.com:dbrumann/invite-registration.git
     ```
 
 2. Set up development environment with Docker
