@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+    db:
+        image: mysql:latest
+        volumes:
+            - db_data:/var/lib/mysql
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: rootpass
+            MYSQL_DATABASE: invite_registration
+            MYSQL_USER: dbuser
+            MYSQL_PASSWORD: dbpass
+
+    app:
+        build: ./docker/app
+        links:
+            - db
+        volumes:
+            - .:/opt/invite-registration:cached
+        ports:
+            - 8000:8000
+        environment:
+            APP_ENV: dev
+            APP_DEBUG: 1
+            DATABASE_URL: mysql://dbuser:dbpass@db:3306/invite_registration
+
+volumes:
+    db_data: ~
