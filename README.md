@@ -4,6 +4,8 @@ Messenger Demo: Registration with invite code.
 This demo application showcases Symfony's messenger component in a fictitious,
 but realistic usage scenario.
 
+Please refer to the open [Pull Requests](https://github.com/dbrumann/invite-registration/pulls) to see the actual messenger implementation.
+
 Usage
 -----
 
