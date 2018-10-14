@@ -9,7 +9,7 @@ Please refer to the open [Pull Requests](https://github.com/dbrumann/invite-regi
 Usage
 -----
 
-Users can register on http://localhost:8000/register with an email-address,
+Users can register on http://localhost:8000/register with an email address,
 password and an invite code, they received from a previously registered user.
 
 On successful registration a new account will be created, the invite code used
@@ -45,20 +45,20 @@ Installation
     git clone git@github.com:dbrumann/invite-registration.git
     ```
 
-2. Set up development environment with Docker
+1. Set up development environment with Docker
 
     ```
     docker-compose up
     ```
 
-3. Install dependencies
+1. Install dependencies
 
     ```
     docker-compose exec app bash
     composer install
     ```
 
-4. Setup database and load fixtures
+1. Set up database and load fixtures
 
     ```
     docker-compose exec app bash
@@ -66,6 +66,6 @@ Installation
     php bin/console doctrine:fixtures:load
     ```
 
-6. Open browser
+1. Open browser
 
     http://localhost:8000
