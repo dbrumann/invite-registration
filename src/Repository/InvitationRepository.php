@@ -35,4 +35,18 @@ class InvitationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleResult();
     }
+
+    /**
+     * @throws NoResultException When no invite code matches the criteria
+     */
+    public function findRedeemedInvitationByCode(string $id): Invitation
+    {
+        $builder = $this->createQueryBuilder('invitation');
+
+        return $builder
+            ->where('invitation.id = :id AND invitation.redeemedAt IS NOT NULL')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getSingleResult();
+    }
 }

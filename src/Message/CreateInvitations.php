@@ -2,18 +2,16 @@
 
 namespace App\Message;
 
-use App\Entity\User;
-
 class CreateInvitations
 {
     private $owner;
 
-    public function __construct(User $owner)
+    public function __construct(string $owner)
     {
         $this->owner = $owner;
     }
 
-    public function getOwner(): User
+    public function getOwner(): string
     {
         return $this->owner;
     }

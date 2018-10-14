@@ -2,18 +2,16 @@
 
 namespace App\Message;
 
-use App\Entity\Invitation;
-
 class InvitationRedeemed
 {
     private $invitation;
 
-    public function __construct(Invitation $invitation)
+    public function __construct(string $invitation)
     {
         $this->invitation = $invitation;
     }
 
-    public function getInvitation(): Invitation
+    public function getInvitation(): string
     {
         return $this->invitation;
     }

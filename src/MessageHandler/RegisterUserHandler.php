@@ -23,6 +23,6 @@ class RegisterUserHandler implements MessageHandlerInterface
     {
         $createdUser = $this->userCreator->create($registerUserMessage->email, $registerUserMessage->plainPassword);
 
-        $this->messageBus->dispatch(new RedeemInvitation($registerUserMessage->inviteCode, $createdUser));
+        $this->messageBus->dispatch(new RedeemInvitation($registerUserMessage->inviteCode, (string) $createdUser));
     }
 }

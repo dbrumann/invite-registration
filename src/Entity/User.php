@@ -71,4 +71,9 @@ class User implements UserInterface
     public function eraseCredentials(): void
     {
     }
+
+    public function __toString(): string
+    {
+        return $this->getEmail();
+    }
 }

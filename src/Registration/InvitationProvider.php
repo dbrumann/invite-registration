@@ -40,4 +40,20 @@ final class InvitationProvider
             );
         }
     }
+
+    /**
+     * @throws InvalidInvitationException When invite code is not redeemable.
+     */
+    public function getRedeemedInvitation(string $code): Invitation
+    {
+        try {
+            return $this->invitationRepository->findRedeemedInvitationByCode($code);
+        } catch (NoResultException $exception) {
+            throw new InvalidInvitationException(
+                sprintf('Could not find an open invitation matching the code "%s"', $code),
+                0,
+                $exception
+            );
+        }
+    }
 }

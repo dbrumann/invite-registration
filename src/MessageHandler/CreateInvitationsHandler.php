@@ -4,22 +4,24 @@ namespace App\MessageHandler;
 
 use App\Message\CreateInvitations;
 use App\Registration\InvitationGenerator;
+use App\Registration\UserProvider;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class CreateInvitationsHandler implements MessageHandlerInterface
 {
+    private $userProvider;
     private $invitationGenerator;
 
-    public function __construct(InvitationGenerator $invitationGenerator)
+    public function __construct(UserProvider $userProvider, InvitationGenerator $invitationGenerator)
     {
+        $this->userProvider = $userProvider;
         $this->invitationGenerator = $invitationGenerator;
     }
 
     public function __invoke(CreateInvitations $createInvitationsMessage): void
     {
-        $this->invitationGenerator->generateMultiple(
-            $createInvitationsMessage->getOwner(),
-            $createInvitationsMessage->getCount()
-        );
+        $owner = $this->userProvider->getUserByEmail($createInvitationsMessage->getOwner());
+
+        $this->invitationGenerator->generateMultiple($owner, $createInvitationsMessage->getCount());
     }
 }
