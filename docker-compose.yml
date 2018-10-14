@@ -13,10 +13,16 @@ services:
             MYSQL_USER: dbuser
             MYSQL_PASSWORD: dbpass
 
+    queue:
+        image: rabbitmq:management
+        ports:
+            - 15672:15672
+
     app:
         build: ./docker/app
         links:
             - db
+            - queue
         volumes:
             - .:/opt/invite-registration:cached
         ports:
@@ -26,6 +32,7 @@ services:
             APP_DEBUG: 1
             APP_SECRET: "90bdd6ea7f7117657cbc1e304392971f"
             DATABASE_URL: "mysql://dbuser:dbpass@db:3306/invite_registration"
+            MESSENGER_TRANSPORT_DSN: "amqp://guest:guest@queue:5672/%2f"
             MAILER_URL: "null://localhost"
 
 volumes:
