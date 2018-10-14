@@ -1,12 +1,12 @@
 framework:
     messenger:
         transports:
-            # Uncomment the following line to enable a transport named "amqp"
-            # amqp: '%env(MESSENGER_TRANSPORT_DSN)%'
+            amqp_invite_creation: '%env(MESSENGER_TRANSPORT_DSN)%/invites'
+            amqp_events: '%env(MESSENGER_TRANSPORT_DSN)%/events'
 
         routing:
-            # Route your messages to the transports
-            # 'App\Message\YourMessage': amqp
+            App\Message\CreateInvitations: amqp_invite_creation
+            App\Message\InvitationRedeemed: amqp_events
 
         buses:
             default:
