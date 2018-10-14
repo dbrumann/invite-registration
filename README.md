@@ -32,9 +32,7 @@ In other words the workflow for registration consists of the following steps:
 Requirements
 ------------
 
-- PHP 7.1.3 or higher
-- sqlite3 and PHP extension: pdo_sqlite
-- composer
+- Docker
 
 Installation
 ------------
@@ -45,25 +43,27 @@ Installation
     git clone git@github.com:dbrumann/messenger-invite-registration.git
     ```
 
-2. Install dependencies (Composer must be installed)
+2. Set up development environment with Docker
 
     ```
+    docker-compose up
+    ```
+
+3. Install dependencies
+
+    ```
+    docker-compose exec app bash
     composer install
     ```
 
-3. Setup database and load fixtures (SQLite must be installed)
+4. Setup database and load fixtures
 
     ```
+    docker-compose exec app bash
     php bin/console doctrine:schema:update --force
     php bin/console doctrine:fixtures:load
     ```
 
-4. Start web server
-
-    ```
-    php -S localhost:8000 -t public/
-    ```
-    
-5. Open browser
+6. Open browser
 
     http://localhost:8000
