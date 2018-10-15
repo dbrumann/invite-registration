@@ -25,13 +25,13 @@ class InvitationRepository extends ServiceEntityRepository
     /**
      * @throws NoResultException When no invite code matches the criteria
      */
-    public function findOpenInvitationByCode(string $id): Invitation
+    public function findOpenInvitationByCode(string $inviteCode): Invitation
     {
         $builder = $this->createQueryBuilder('invitation');
 
         return $builder
-            ->where('invitation.id = :id AND invitation.redeemedAt IS NULL')
-            ->setParameter('id', $id)
+            ->where('invitation.inviteCode = :code AND invitation.redeemedAt IS NULL')
+            ->setParameter('code', $inviteCode)
             ->getQuery()
             ->getSingleResult();
     }
@@ -39,13 +39,13 @@ class InvitationRepository extends ServiceEntityRepository
     /**
      * @throws NoResultException When no invite code matches the criteria
      */
-    public function findRedeemedInvitationByCode(string $id): Invitation
+    public function findRedeemedInvitationByCode(string $inviteCode): Invitation
     {
         $builder = $this->createQueryBuilder('invitation');
 
         return $builder
-            ->where('invitation.id = :id AND invitation.redeemedAt IS NOT NULL')
-            ->setParameter('id', $id)
+            ->where('invitation.inviteCode = :code AND invitation.redeemedAt IS NOT NULL')
+            ->setParameter('code', $inviteCode)
             ->getQuery()
             ->getSingleResult();
     }

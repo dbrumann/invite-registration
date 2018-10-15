@@ -20,7 +20,7 @@ class CreateInvitationsHandler implements MessageHandlerInterface
 
     public function __invoke(CreateInvitations $createInvitationsMessage): void
     {
-        $owner = $this->userProvider->getUserByEmail($createInvitationsMessage->getOwner());
+        $owner = $this->userProvider->getUserByEmail($createInvitationsMessage->getOwnerEmail());
 
         $this->invitationGenerator->generateMultiple($owner, $createInvitationsMessage->getCount());
     }

@@ -2,15 +2,26 @@
 
 namespace App\Message;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class RedeemInvitation
 {
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Uuid()
+     */
     private $inviteCode;
-    private $invitedUser;
 
-    public function __construct(string $inviteCode, string $invitedUser)
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Email()
+     */
+    private $invitedEmail;
+
+    public function __construct(string $inviteCode, string $invitedEmail)
     {
         $this->inviteCode = $inviteCode;
-        $this->invitedUser = $invitedUser;
+        $this->invitedEmail = $invitedEmail;
     }
 
     public function getInviteCode(): string
@@ -18,8 +29,8 @@ class RedeemInvitation
         return $this->inviteCode;
     }
 
-    public function getInvitedUser(): string
+    public function getInvitedEmail(): string
     {
-        return $this->invitedUser;
+        return $this->invitedEmail;
     }
 }

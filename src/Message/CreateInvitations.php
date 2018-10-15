@@ -2,18 +2,24 @@
 
 namespace App\Message;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class CreateInvitations
 {
-    private $owner;
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Email()
+     */
+    private $ownerEmail;
 
-    public function __construct(string $owner)
+    public function __construct(string $ownerEmail)
     {
-        $this->owner = $owner;
+        $this->ownerEmail = $ownerEmail;
     }
 
-    public function getOwner(): string
+    public function getOwnerEmail(): string
     {
-        return $this->owner;
+        return $this->ownerEmail;
     }
 
     public function getCount(): int

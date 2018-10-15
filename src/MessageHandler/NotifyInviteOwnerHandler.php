@@ -20,7 +20,7 @@ class NotifyInviteOwnerHandler implements MessageHandlerInterface
 
     public function __invoke(InvitationRedeemed $invitationRedeemedMessage): void
     {
-        $invitation = $this->invitationProvider->getRedeemedInvitation($invitationRedeemedMessage->getInvitation());
+        $invitation = $this->invitationProvider->getRedeemedInvitation($invitationRedeemedMessage->getInviteCode());
 
         $this->notifier->notifyInvitingUser($invitation->getOwner());
     }

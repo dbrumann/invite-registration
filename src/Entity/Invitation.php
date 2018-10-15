@@ -16,7 +16,7 @@ class Invitation
      * @ORM\Id()
      * @ORM\Column(type="uuid")
      */
-    private $id;
+    private $inviteCode;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", cascade={"all"})
@@ -36,7 +36,7 @@ class Invitation
 
     public function __construct(User $owner)
     {
-        $this->id = Uuid::uuid4();
+        $this->inviteCode = Uuid::uuid4();
         $this->owner = $owner;
     }
 
@@ -46,9 +46,9 @@ class Invitation
         $this->redeemedBy = $invitee->getEmail();
     }
 
-    public function getId(): string
+    public function getInviteCode(): string
     {
-        return $this->id->toString();
+        return $this->inviteCode->toString();
     }
 
     public function getOwner(): User
@@ -63,6 +63,6 @@ class Invitation
 
     public function __toString(): string
     {
-        return $this->getId();
+        return $this->getInviteCode();
     }
 }

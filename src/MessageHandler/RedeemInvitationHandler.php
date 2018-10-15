@@ -33,7 +33,7 @@ class RedeemInvitationHandler implements MessageHandlerInterface
     public function __invoke(RedeemInvitation $redeemInvitationMessage): void
     {
         $invitation = $this->invitationProvider->getOpenInvitation($redeemInvitationMessage->getInviteCode());
-        $inviteduser = $this->userProvider->getUserByEmail($redeemInvitationMessage->getInvitedUser());
+        $inviteduser = $this->userProvider->getUserByEmail($redeemInvitationMessage->getInvitedEmail());
 
         $this->invitationRedeemer->redeem($invitation, $inviteduser);
 
